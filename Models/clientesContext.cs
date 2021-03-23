@@ -29,6 +29,7 @@ namespace MSClientes.Models
             if (!optionsBuilder.IsConfigured)
             {
                 string connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
+                Console.WriteLine(connectionString);
                 optionsBuilder.UseMySql(connectionString, Microsoft.EntityFrameworkCore.ServerVersion.FromString("8.0.23-mysql"),
                     builder => {
                         builder.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
