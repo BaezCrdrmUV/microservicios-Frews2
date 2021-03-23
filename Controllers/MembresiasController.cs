@@ -45,7 +45,7 @@ namespace MSClientes.Controllers
             else return Ok(membresia);
         }
         
-        [HttpGet("crear")]
+        [HttpPost("crear")]
         public async Task<ActionResult<Membresia>> create([FromBody]Membresia membresia)
         {   
             if(membresia == null)
@@ -67,7 +67,7 @@ namespace MSClientes.Controllers
           
         }
 
-        [HttpGet("actualizar/{id}")]
+        [HttpPut("actualizar/{id}")]
         public async Task<ActionResult<Membresia>> Update(int id, [FromBody]Membresia cambioMembresia)
         {
             if(cambioMembresia == null)

@@ -13,15 +13,19 @@ namespace MSClientes.Controllers
     [ApiController]
     public class ClientesController : ControllerBase
     {
-        clientesContext dbContext;
+        private clientesContext dbContext;
         private readonly ILogger<ClientesController> log;
+
+        public ClientesController(ILogger<ClientesController> logger) 
+        {
+            log = logger;
+            dbContext = new clientesContext();
+        }
 
         [HttpGet("buscar")]
         public async Task<ActionResult<Cliente>> Search([FromQuery]string nombre = "", [FromQuery] int idCliente = -1)
         {
             List<Cliente> clientes = null;
-            
-            clientesContext dbContext = new clientesContext();
 
             clientes = await dbContext.Clientes
                 .Where(cliente => cliente.Nombre.Contains(nombre))
@@ -37,7 +41,7 @@ namespace MSClientes.Controllers
             return Ok(clientes);
         }
 
-         [HttpPost("RegistrarCliente")]
+        [HttpPost("RegistrarCliente")]
         public async Task<ActionResult<Cliente>> Add([FromBody]Cliente cliente)
         {
             if(cliente == null)
@@ -61,7 +65,7 @@ namespace MSClientes.Controllers
             }
         }
 
-        [HttpPost("actualizarCliente")]
+        [HttpPut("actualizarCliente")]
         public async Task<ActionResult<Cliente>> update([FromBody]Cliente cliente)
         {
             if(cliente == null)
@@ -77,7 +81,7 @@ namespace MSClientes.Controllers
                 await dbContext.SaveChangesAsync();
                 
                 log.LogInformation("Se actualizo el cliente: {0}", cliente.Nombre);
-                return Created("", cliente);
+                return Ok(cliente);
             }
             catch (Exception ex)
             {
