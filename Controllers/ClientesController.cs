@@ -12,10 +12,32 @@ namespace MSClientes.Controllers
     [ApiController]
     public class ClientesController : ControllerBase
     {
-        [HttpGet("buscar")]
-        public async Task<ActionResult<Cliente>> Search()
+        clientesContext dbContext;
+        private readonly ILogger<ClientesController> log;
+
+        [HttpPost("actualizarCliente")]
+        public async Task<ActionResult<Cliente>> update([FromBody]Cliente cliente)
         {
-            return Ok();
+            if(cliente == null)
+            {
+                log.LogError("No se encontro el cliente a actualizar");
+                return BadRequest("Cliente no encontrado");
+            }
+
+            try
+            {
+                var miCliente = dbContext.Clientes.SingleOrDefault(c => c.Id == cliente.Id);
+                miCliente = cliente;
+                await dbContext.SaveChangesAsync();
+                
+                log.LogInformation("Se actualizo el cliente: {0}", cliente.Nombre);
+                return Created("", cliente);
+            }
+            catch (Exception ex)
+            {
+                log.LogError("Ocurrio un problema:\n" + ex.Message);
+                return BadRequest(ex);
+            }
         }
     }
 }
