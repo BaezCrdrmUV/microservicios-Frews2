@@ -31,13 +31,25 @@ namespace MSClientes.Controllers
             _logger = logger;
             dbContext = new clientesContext();
         }
+
+        [HttpGet("buscar")]
+        public async Task<ActionResult<Membresia>> Get([FromQuery] int idCliente = -1, [FromQuery] int tipo = -1)
+        {
+            List<Membresia> membresia = null;
+
+            membresia = await dbContext.Membresias
+                .Where(p => (p.IdCliente >= 0 && p.IdCliente == idCliente))
+                .Where(p => (p.Tipo >= 0 && p.Tipo == tipo))
+                .ToListAsync();
+            if (membresia == null) return BadRequest();
+            else return Ok(membresia);
+        }
         
         [HttpGet("crear")]
         public async Task<ActionResult<Membresia>> create([FromBody]Membresia membresia)
         {   
             if(membresia == null)
             {
-               
                 return BadRequest("membresia nula");
             }
 
